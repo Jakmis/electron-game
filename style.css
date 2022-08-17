@@ -1,0 +1,34 @@
+body{
+    background-color: black;
+}
+
+#window{
+    flex: 1;
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+}
+#endGame{
+    display: none;
+    position: absolute;
+    padding: 20px 50px; 
+    color: black; 
+    text-align: center;
+    background-color: white;
+    border: 1px black solid;
+    border-radius: 25px;
+}
+
+#startGame{
+    display: none;
+    position: absolute;
+    padding: 20px 50px; 
+    color: black; 
+    text-align: center;
+    background-color: white;
+    border: 1px black solid;
+    border-radius: 25px;
+}
+button{
+    width: 400px;
+}
