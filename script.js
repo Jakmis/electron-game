@@ -1,6 +1,9 @@
+import { Player } from "./dist/player.js";
+import { Projectile } from "./dist/projectile.js";
+import { Enemy } from "./dist/enemy.js";
 /*Konstanty*/
 const canvas = document.querySelector('canvas');
-const ctx = canvas.getContext('2d');
+export const ctx = canvas.getContext('2d');
 /*Plátno*/
 canvas.height = innerHeight;
 canvas.width = innerWidth;
@@ -9,66 +12,6 @@ const scoreElement = document.querySelector('#scoreElement');
 const endScore = document.getElementById('endScore');
 const highScore = document.getElementById('highScore');
 const btn = document.getElementById('playAgain')
-/*Player*/
-class Player {
-    constructor(x, y, radius, color) {
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-        this.color = color;
-    }
-    /*Nakreslení Player*/
-    draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-    }
-}
-/*Projectile*/
-class Projectile {
-    constructor(x, y, radius, color, velocity) {
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-        this.color = color;
-        this.velocity = velocity;
-    };
-    /*Nakreslení Projectile*/
-    draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-    };
-    update() {
-        this.draw();
-        this.x = this.x + this.velocity.x;
-        this.y = this.y + this.velocity.y;
-    };
-};
-/*Enemy */
-class Enemy {
-    constructor(x, y, radius, color, velocity) {
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-        this.color = color;
-        this.velocity = velocity;
-    };
-    /*Nakreslení Projectile*/
-    draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-    };
-    update() {
-        this.draw();
-        this.x = this.x + this.velocity.x;
-        this.y = this.y + this.velocity.y;
-    };
-};
 
 const slowparticles = 0.97;
 /*Částečky po zničení nepřítel */
@@ -112,16 +55,16 @@ const enemies = [];
 const particles = [];
 
 /*Vytváření nepřátel*/
-function spawnEnemies(){
+function spawnEnemies() {
     setInterval(() => {
         const radius = Math.random() * (30 - 4) + 4;
         let x;
         let y;
-        if (Math.random() < 0.5){
+        if (Math.random() < 0.5) {
             x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius;
             y = Math.random() * canvas.height;
         }
-        else{
+        else {
             x = Math.random() * canvas.width;
             y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius;
         };
@@ -133,21 +76,21 @@ function spawnEnemies(){
             y: Math.sin(angle)
         };
         enemies.push(new Enemy(x, y, radius, color, velocity));
-        }, 1000);
+    }, 1000);
 }
 
 let animationId
 let score = 0;
 let hScore = localStorage.getItem("highScore");
-    if (hScore !== null) {
-        if (score > hScore) {
-            localStorage.setItem("hScore", score);
-        }
-        else{
-            localStorage.setItem("hScore", score)
-        }
+if (hScore !== null) {
+    if (score > hScore) {
+        localStorage.setItem("hScore", score);
     }
-    console.log(hScore);
+    else {
+        localStorage.setItem("hScore", score)
+    }
+}
+//console.log(hScore);
 /*Opakující se funkce*/
 function animate() {
     animationId = requestAnimationFrame(animate);
@@ -158,22 +101,22 @@ function animate() {
         if (particle.alpha <= 0) {
             particles.splice(index, 1)
         }
-        else{
+        else {
             particle.update();
         }
     })
     projectiles.forEach(function (projectile, index) {
-            projectile.update();
-            /*Odstránění projectiles z obrazovky*/
-            if (projectile.x + projectile.radius < 0 || 
-                projectile.x - projectile.radius > canvas.width ||
-                projectile.y + projectile.radius < 0 ||
-                projectile.y - projectile.radius > canvas.height) {
-                setTimeout(() => {
-                    projectiles.splice(index, 1);
-                }, 0);
-            }
-        })
+        projectile.update();
+        /*Odstránění projectiles z obrazovky*/
+        if (projectile.x + projectile.radius < 0 ||
+            projectile.x - projectile.radius > canvas.width ||
+            projectile.y + projectile.radius < 0 ||
+            projectile.y - projectile.radius > canvas.height) {
+            setTimeout(() => {
+                projectiles.splice(index, 1);
+            }, 0);
+        }
+    })
 
     enemies.forEach((enemy, index) => {
         enemy.update();
@@ -184,7 +127,7 @@ function animate() {
         if (distance - enemy.radius - player.radius < 1) {
             cancelAnimationFrame(animationId);
             endGame.style.display = "block";
-            endScore.innerHTML = score;                
+            endScore.innerHTML = score;
         }
 
         /*Vzdálenost nepřátel od střely*/
@@ -210,23 +153,23 @@ function animate() {
                     gsap.to(enemy, {
                         radius: enemy.radius - 10
                     })
-                    enemy.radius -=10
+                    enemy.radius -= 10
 
-                /*Plynulejší zničení nepřátel - SetTimeout(0)*/
-                setTimeout(() => {
-                    projectiles.splice(projectileIndex, 1);
-                }, 0);
+                    /*Plynulejší zničení nepřátel - SetTimeout(0)*/
+                    setTimeout(() => {
+                        projectiles.splice(projectileIndex, 1);
+                    }, 0);
                 }
 
-                else{
-                /*Score - bonusové score za celé zničení nepřátel*/
+                else {
+                    /*Score - bonusové score za celé zničení nepřátel*/
                     score += 150;
                     scoreElement.innerHTML = score;
-                /*Plynulejší zničení nepřátel - SetTimeout(0)*/
-                setTimeout(() => {
-                    enemies.splice(index, 1);
-                    projectiles.splice(projectileIndex, 1);
-                }, 0);
+                    /*Plynulejší zničení nepřátel - SetTimeout(0)*/
+                    setTimeout(() => {
+                        enemies.splice(index, 1);
+                        projectiles.splice(projectileIndex, 1);
+                    }, 0);
                 }
 
             }
@@ -234,28 +177,45 @@ function animate() {
     })
 };
 
-btn.addEventListener('click', function(){
+btn.addEventListener('click', function () {
     location.reload();
 })
-
-window.addEventListener('click', function(event){
+//Střílení
+window.addEventListener('click', function (event) {
     const angle = Math.atan2(event.clientY - canvas.height / 2, event.clientX - canvas.width / 2);
     const velocity = {
         x: Math.cos(angle) * 5,
         y: Math.sin(angle) * 5
     }
+    if (score > 100) {
+        projectiles.push(new Projectile(
+            canvas.width / 2, canvas.height / 2, 10, 'orange', velocity
+        ))
+    } else {
+        projectiles.push(new Projectile(
+            canvas.width / 2, canvas.height / 2, 5, 'white', velocity
+        )
+        )
+    }
+})
+
+window.addEventListener('mousemove', function(event){
+    console.log(event);
+    /*const angle = Math.atan2(event.clientY - canvas.height / 2, event.clientX - canvas.width / 2);
+    const velocity = {
+        x: Math.cos(angle) * 5,
+        y: Math.sin(angle) * 5
+    }
     projectiles.push(new Projectile(
-        canvas.width / 2, canvas.height / 2, 5, 'white', velocity
-    )
-)
+        canvas.width / 2, canvas.height / 2, 5, 'red', velocity
+    ))*/
 })
 
 
-
-function startAnimation(){
+function startAnimation() {
     const start = document.getElementById('start');
     startGame.style.display = "block";
-    start.addEventListener('click', function(){
+    start.addEventListener('click', function () {
         animate();
         spawnEnemies();
         startGame.style.display = "none";

@@ -2,6 +2,7 @@
   "name": "electron-game",
   "version": "1.0.0",
   "description": "Space Shooter game using Electron framework",
+  "type": "module",
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
