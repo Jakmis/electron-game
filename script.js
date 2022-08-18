@@ -1,6 +1,7 @@
 import { Player } from "./dist/player.js";
 import { Projectile } from "./dist/projectile.js";
 import { Enemy } from "./dist/enemy.js";
+import { Particle } from "./dist/particle.js";
 /*Konstanty*/
 const canvas = document.querySelector('canvas');
 export const ctx = canvas.getContext('2d');
@@ -13,36 +14,6 @@ const endScore = document.getElementById('endScore');
 const highScore = document.getElementById('highScore');
 const btn = document.getElementById('playAgain')
 
-const slowparticles = 0.97;
-/*Částečky po zničení nepřítel */
-class Particle {
-    constructor(x, y, radius, color, velocity) {
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-        this.color = color;
-        this.velocity = velocity;
-        this.alpha = 1;
-    };
-    /*Nakreslení Projectile*/
-    draw() {
-        ctx.save();
-        ctx.globalAlpha = this.alpha;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.restore();
-    };
-    update() {
-        this.draw();
-        this.velocity.x *= slowparticles;
-        this.velocity.y *= slowparticles;
-        this.x = this.x + this.velocity.x;
-        this.y = this.y + this.velocity.y;
-        this.alpha -= 0.01;
-    };
-};
 /*Posunutí na Player střed*/
 const x = canvas.width / 2;
 const y = canvas.height / 2;
