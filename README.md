@@ -21,7 +21,7 @@ npm run start
 ### Create desktop application
 
 It will create desktop application on which OS you are using.
-for more information visit [Electron-forge website](https://www.electronforge.io/cli)
+For more information visit [Electron-forge website](https://www.electronforge.io/cli)
 
 ```
 npm run make
